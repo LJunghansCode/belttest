@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>homepage</title>
+	<style>
+
+		*{
+			padding: 10px;
+		}
+		tr, th, td, table{
+			border: 1px solid black;
+		}
+
+	</style>
+</head>
+<body>
+	<a href="{% url 'logout' %}"><button>Logout</button></a>
+	<h1>Hello {{request.session.user.first_name}}
+	born on {{request.session.user.date_birth}}</h1>
+	{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+   <h3>Your Personal Appointments</h3>
+	<table><tr>
+		<th>Task</th>
+		<th>Status</th>
+		<th>Date</th>
+		<th>Time</th>
+		</tr>
+			<tr>
+			{% for appointment in appointments %}
+			<td>
+			{{appointment.task}}
+			</td>
+			<td>
+			{{appointment.status}}
+			</td>
+			<td>
+			{{appointment.date}}
+			</td>
+			<td>{{appointment.time}}</td>
+			<td><form action="{% url 'delete'%}" method="POST">
+				{% csrf_token %}
+				<input type="hidden", name="getting_deleted", value="{{appointment.id}}">
+				<input type="submit", value="Delete">
+			</form></td>
+			<td><form action="{% url 'edit' apt_id=appointment.id%}" method="POST">
+				{% csrf_token %}
+				<input type="hidden", name="getting_edited", value="{{appointment.id}}">
+				<input type="submit", value="Edit">
+			</form></td>
+			</tr>
+			
+			{% endfor %}
+
+
+
+	</table>
+	<h3>Future Appointments</h3>
+<table><tr>
+		<th>Task</th>
+		<th>Status</th>
+		<th>Date</th>
+		<th>Time</th>
+		</tr>
+			<tr>
+			{% for appointment in appointments %}
+			<td>
+			{{appointment.task}}
+			</td>
+			<td>
+			{{appointment.status}}
+			</td>
+			<td>
+			{{appointment.date}}
+			</td>
+			<td>{{appointment.time}}</td>
+			<td><form action="{% url 'delete'%}" method="POST">
+				{% csrf_token %}
+				<input type="hidden", name="getting_deleted", value="{{appointment.id}}">
+				<input type="submit", value="Delete">
+			</form></td>
+			<td><form action="{% url 'edit' apt_id=appointment.id%}" method="POST">
+				{% csrf_token %}
+				<input type="hidden", name="getting_edited", value="{{appointment.id}}">
+				<input type="submit", value="Edit">
+			</form></td>
+			</tr>
+			
+			{% endfor %}
+
+
+
+	</table>
+
+
+
+
+
+
+
+
+
+	<form action="{% url 'create' %}" method="POST">
+	{% csrf_token %}
+	<input type="date" name="date">
+	<input type="text" name="task">
+	<input type="time" name="time">
+	<input type="hidden" name="user" value="{{request.session.user.id}}">
+	<input type="submit" value="More to do!">
+		
+
+	</form>
+
+</body>
+</html>
